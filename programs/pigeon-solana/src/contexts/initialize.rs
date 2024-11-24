@@ -109,7 +109,7 @@ impl<'info> Initialize<'info> {
                 data: DataV2 {
                     name: "Pigeon Fight".to_owned(),
                     symbol: "PF".to_owned(),
-                    uri: "".to_owned(),
+                    uri: "https://assets.pigeon-fight.xyz/sol-metadata/collection.json".to_string(),
                     seller_fee_basis_points: 0,
                     creators: Some(creator),
                     collection: None,

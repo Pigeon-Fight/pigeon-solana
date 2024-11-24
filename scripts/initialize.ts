@@ -1,12 +1,11 @@
 import * as anchor from "@coral-xyz/anchor";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { Keypair } from "@solana/web3.js";
 import { PigeonBattle } from "../target/types/pigeon_battle";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-import { getMasterEdition, getMetadata } from "./helpers";
-import { PROGRAM_ID } from "./constants";
+import { getMasterEdition, getMetadata } from "./utils/helpers";
+import { IDL } from "./utils/idl";
 
 // GasFee: 0.02 SOL
-
 const main = async () => {
   // Configure the provider to use Devnet
   const provider = anchor.AnchorProvider.env();
@@ -15,9 +14,7 @@ const main = async () => {
   console.log("User wallet public key:", provider.wallet.publicKey.toBase58());
 
   // Load the IDL
-  const programId = new PublicKey(PROGRAM_ID);
-  const idl = await anchor.Program.fetchIdl<PigeonBattle>(programId, provider);
-  const program = new anchor.Program(idl, provider);
+  const program = new anchor.Program<PigeonBattle>(IDL as any, provider);
 
   // Generate a new mint
   const collectionKeypair = Keypair.generate();

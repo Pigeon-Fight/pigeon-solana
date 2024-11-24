@@ -23,10 +23,6 @@ pub mod pigeon_battle {
         ctx.accounts.mint_nft(&ctx.bumps, nft_class)
     }
 
-    pub fn verify_collection(ctx: Context<VerifyCollectionMint>) -> Result<()> {
-        ctx.accounts.verify_collection(&ctx.bumps)
-    }
-
     pub fn battle(ctx: Context<Battle>) -> Result<()> {
         ctx.accounts.battle()
     }

@@ -19,7 +19,7 @@ pub struct PurchaseItem<'info> {
     )]
     pub admin: AccountInfo<'info>,
     #[account(
-        constraint = token.key() == user.key() @ CustomError::NotOwner
+        constraint = token.owner.key() == user.key() @ CustomError::NotOwner
     )]
     pub token: Account<'info, TokenAccount>,
     #[account(

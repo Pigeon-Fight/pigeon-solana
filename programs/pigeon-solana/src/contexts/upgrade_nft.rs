@@ -19,7 +19,7 @@ pub struct UpgradeNft<'info> {
     )]
     pub nft_attribute_account: Account<'info, NftAttributes>,
     #[account(
-        constraint = token.key() == owner.key() @ CustomError::NotOwner
+        constraint = token.owner.key() == owner.key() @ CustomError::NotOwner
     )]
     pub token: Account<'info, TokenAccount>,
 }

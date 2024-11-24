@@ -1,16 +1,16 @@
 import * as anchor from "@coral-xyz/anchor";
-import { PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import { PigeonBattle } from "../target/types/pigeon_battle";
-import { generateSigner } from "@metaplex-foundation/umi";
-import {
-  findMasterEditionPda,
-  findMetadataPda,
-  mplTokenMetadata,
-} from "@metaplex-foundation/mpl-token-metadata";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
+import {} from "@metaplex-foundation/mpl-token-metadata";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { getMasterEdition, getMetadata } from "./utils/helpers";
+import { ADMIN, PROGRAM_ID } from "./utils/constants";
+import { IDL } from "./utils/idl";
 
-const NFT_CLASS = 1;
+const NFT_CLASS = 8;
+const MINT_COLLECTION_ACCOUNT = "3ay5phJCEWbrn23f2iPXEGU9BQYhuAtBRVvxue7Yjd6f";
 
+// Fee: 0.021 SOL
 const main = async () => {
   // Configure the provider to use Devnet
   const provider = anchor.AnchorProvider.env();
@@ -19,37 +19,41 @@ const main = async () => {
   console.log("User wallet public key:", provider.wallet.publicKey.toBase58());
 
   // Load the IDL
-  const programId = new PublicKey(
-    "GtJQXa6CQ4qX4GuM92v7DbissAbVwrQJVcx5a4YESiCS"
-  ); // Replace with your program ID
-  const idl = await anchor.Program.fetchIdl<PigeonBattle>(programId, provider);
-  const program = new anchor.Program(idl, provider);
+  const programId = new PublicKey(PROGRAM_ID); // Replace with your program ID
+  const program = new anchor.Program<PigeonBattle>(IDL as any, provider);
 
   // Generate a new mint
-  const mint = generateSigner(umi);
-  const userTokenAccount = await getAssociatedTokenAddress(
-    new PublicKey(mint.publicKey),
+  const nftKeypair = Keypair.generate();
+  const nftMint = nftKeypair.publicKey;
+  const destination = getAssociatedTokenAddressSync(
+    nftMint,
     provider.wallet.publicKey
   );
 
   // Derive metadata and master edition accounts
-  const [metadataPDA, _metadataBump] = findMetadataPda(umi, {
-    mint: mint.publicKey,
-  });
-  const [masterEditionPDA, _masterEditionBump] = findMasterEditionPda(umi, {
-    mint: mint.publicKey,
-  });
+  const metadata = await getMetadata(nftMint);
+  const masterEdition = await getMasterEdition(nftMint);
+
+  const nftClassBytes = Buffer.alloc(1); // Adjust size for u8/u16/u32
+  nftClassBytes.writeUint8(NFT_CLASS, 0);
+  const [nftInfoAccount, _bump] = PublicKey.findProgramAddressSync(
+    [Buffer.from("nft_data"), nftClassBytes],
+    programId
+  );
 
   // Invoke
   await program.methods
     .mintNft(NFT_CLASS)
-    .accounts({
-      user: provider.wallet.publicKey,
-      mint: mint.publicKey,
-      token: userTokenAccount,
-      metadataAccount: metadataPDA,
-      masterEditionAccount: masterEditionPDA,
+    .accountsPartial({
+      admin: new PublicKey(ADMIN),
+      mint: nftMint,
+      metadata,
+      masterEdition,
+      destination,
+      collectionMint: new PublicKey(MINT_COLLECTION_ACCOUNT),
+      nftInfoAccount,
     })
+    .signers([nftKeypair])
     .rpc();
 
   console.log("NFT minted successfully!");

@@ -36,14 +36,14 @@ pub struct MintNFT<'info> {
     pub admin: AccountInfo<'info>,
     #[account(
         seeds = [b"pigeon_config"],
-        bump,
+        bump
     )]
-    pub pigeon_config: Account<'info, PigeonConfig>,
+    pub pigeon_config: Box<Account<'info, PigeonConfig>>,
     #[account(
         seeds = [b"nft_data", nft_class.to_le_bytes().as_ref()],
         bump,
     )]
-    pub nft_info_account: Account<'info, NftClassInfo>,
+    pub nft_info_account: Box<Account<'info, NftClassInfo>>,
     #[account(
         init,
         payer = owner,
@@ -51,14 +51,14 @@ pub struct MintNFT<'info> {
         mint::authority = mint_authority,
         mint::freeze_authority = mint_authority,
     )]
-    pub mint: Account<'info, Mint>,
+    pub mint: Box<Account<'info, Mint>>,
     #[account(
         init,
         payer = owner,
         associated_token::mint = mint,
         associated_token::authority = owner
     )]
-    pub destination: Account<'info, TokenAccount>,
+    pub destination: Box<Account<'info, TokenAccount>>,
     #[account(mut)]
     /// CHECK: This account will be initialized by the metaplex program
     pub metadata: UncheckedAccount<'info>,
@@ -78,14 +78,15 @@ pub struct MintNFT<'info> {
         payer = owner,
         seeds = [b"attributes", destination.key().as_ref()],
         bump,
-        space = 27 // u8 (1 byte) + u16 (2 bytes) * 9 => 8 (discriminator) + 19 (data)
+        // Padding for Alignment: Solana requires accounts to be padded to an 8-byte boundary. So, after 19 bytes, we need 5 bytes of padding to make it 24 bytes, which aligns the struct on an 8-byte boundary.
+        // u8 (1 byte) + u16 (2 bytes) * 9 => 8 (discriminator) + 19 (data) + 5
+        space = 27
     )]
-    pub nft_attributes_account: Account<'info, NftAttributes>,
+    pub nft_attributes_account: Box<Account<'info, NftAttributes>>,
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_metadata_program: Program<'info, Metadata>,
-    pub rent: Sysvar<'info, Rent>,
 }
 
 impl<'info> MintNFT<'info> {
@@ -105,25 +106,27 @@ impl<'info> MintNFT<'info> {
         let sol_price = nft_info_account.price; // Get the price from the PDA
         let user_balance = **payer.try_borrow_lamports()?; // Check user's balance
 
-        // Ensure the user has enough SOL
-        if user_balance < sol_price {
-            return Err(CustomError::InsufficientFunds.into());
+        if sol_price > 0 {
+            // Ensure the user has enough SOL
+            if user_balance < sol_price {
+                return Err(CustomError::InsufficientFunds.into());
+            }
+            // Transfer SOL from the user to the admin
+            // `transfer`
+            // - Accounts:
+            //   - `[writable] from`
+            //   - `[writable] to`
+            // - Data:
+            //   - lamports (u64)
+            let transfer_instruction =
+                system_instruction::transfer(&payer.key(), &admin.key(), sol_price);
+
+            invoke(
+                &transfer_instruction,
+                &[payer.to_account_info(), admin.to_account_info()],
+            )?;
+            msg!("Token tranferred!");
         }
-
-        // Transfer SOL from the user to the admin
-        // `transfer`
-        // - Accounts:
-        //   - `[writable] from`
-        //   - `[writable] to`
-        // - Data:
-        //   - lamports (u64)
-        let transfer_instruction =
-            system_instruction::transfer(&payer.key(), &admin.key(), sol_price);
-
-        invoke(
-            &transfer_instruction,
-            &[payer.to_account_info(), admin.to_account_info()],
-        )?;
 
         // Mint NFT
         let seeds = &[&b"authority"[..], &[bumps.mint_authority]];
@@ -137,7 +140,6 @@ impl<'info> MintNFT<'info> {
         };
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
         mint_to(cpi_ctx, 1)?;
-        msg!("NFT minted!");
 
         let creator = vec![Creator {
             address: self.mint_authority.key(),
@@ -159,13 +161,13 @@ impl<'info> MintNFT<'info> {
             CreateMetadataAccountV3InstructionArgs {
                 data: DataV2 {
                     name: "Pigeon Fight".to_string(),
-                    symbol: "PIGEON".to_string(),
-                    uri: "https://assets.pigeon-fight.xyz/sol-metadata/".to_string()
+                    symbol: "PF".to_string(),
+                    uri: "https://assets.pigeon-fight.xyz/metadata/".to_string()
                         + nft_class.to_string().as_str(),
-                    seller_fee_basis_points: 0,
+                    seller_fee_basis_points: 500,
                     creators: Some(creator),
                     collection: Some(Collection {
-                        verified: true,
+                        verified: false,
                         key: self.collection_mint.key(),
                     }),
                     uses: None,
@@ -202,6 +204,8 @@ impl<'info> MintNFT<'info> {
         attribute_account.attack = 2 + nft_info_account.boost_attack;
         attribute_account.defense = 2 + nft_info_account.boost_defense;
         attribute_account.speed = 2 + nft_info_account.boost_speed;
+        attribute_account.max_hp = 20;
+        attribute_account.max_energy = 20;
 
         Ok(())
     }

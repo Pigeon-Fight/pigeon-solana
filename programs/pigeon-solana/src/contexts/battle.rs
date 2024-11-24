@@ -90,11 +90,11 @@ pub struct Battle<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
     #[account(
-        constraint = my_token.key() == owner.key() @ CustomError::NotOwner
+        constraint = my_token.owner.key() == owner.key() @ CustomError::NotOwner
     )]
     pub my_token: Account<'info, TokenAccount>,
     #[account(
-        constraint = op_token.owner != my_token.key() @ CustomError::InvalidDefender
+        constraint = op_token.key() != my_token.key() @ CustomError::InvalidDefender
     )]
     pub op_token: Account<'info, TokenAccount>,
     #[account(
@@ -115,6 +115,10 @@ impl<'info> Battle<'info> {
     pub fn battle(&mut self) -> Result<()> {
         let my_attribute_account = &mut self.my_attributes;
         let op_attribute_account = &mut self.op_attributes;
+
+        if op_attribute_account.hp == 0 || my_attribute_account.hp == 0 {
+            return Err(CustomError::InvalidDefender.into());
+        }
 
         let result = internal_battle(my_attribute_account, op_attribute_account);
         msg!("Battle: {}", result);
