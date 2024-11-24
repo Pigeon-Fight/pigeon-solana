@@ -1,11 +1,8 @@
+use crate::{account::NftAttributes, error::CustomError};
+use anchor_lang::prelude::*;
+use anchor_spl::token::TokenAccount;
+
 use std::cmp;
-
-use crate::account::NftAttributes;
-const BASE_EXP: u16 = 10;
-
-pub fn exp_to_point(exp: u16) -> u16 {
-    return 3 * (exp - BASE_EXP) / 50;
-}
 
 fn attack(attacker: &mut NftAttributes, defender: &mut NftAttributes) {
     // energy run out => weak status
@@ -70,7 +67,7 @@ fn turn(
     return turn(action_threshold, my_action_points, op_action_points, my, op);
 }
 
-pub fn internal_battle(my: &mut NftAttributes, op: &mut NftAttributes) -> bool {
+fn internal_battle(my: &mut NftAttributes, op: &mut NftAttributes) -> bool {
     let action_threshold = cmp::max(my.speed, op.speed);
 
     // first turn
@@ -86,4 +83,42 @@ pub fn internal_battle(my: &mut NftAttributes, op: &mut NftAttributes) -> bool {
     }
 
     return result;
+}
+
+#[derive(Accounts)]
+pub struct Battle<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
+    #[account(
+        constraint = my_token.key() == owner.key() @ CustomError::NotOwner
+    )]
+    pub my_token: Account<'info, TokenAccount>,
+    #[account(
+        constraint = op_token.owner != my_token.key() @ CustomError::InvalidDefender
+    )]
+    pub op_token: Account<'info, TokenAccount>,
+    #[account(
+        mut,
+        seeds = [b"attributes", my_token.key().as_ref()],
+        bump,
+    )]
+    pub my_attributes: Account<'info, NftAttributes>,
+    #[account(
+        mut,
+        seeds = [b"attributes", op_token.key().as_ref()],
+        bump,
+    )]
+    pub op_attributes: Account<'info, NftAttributes>,
+}
+
+impl<'info> Battle<'info> {
+    pub fn battle(&mut self) -> Result<()> {
+        let my_attribute_account = &mut self.my_attributes;
+        let op_attribute_account = &mut self.op_attributes;
+
+        let result = internal_battle(my_attribute_account, op_attribute_account);
+        msg!("Battle: {}", result);
+
+        Ok(())
+    }
 }

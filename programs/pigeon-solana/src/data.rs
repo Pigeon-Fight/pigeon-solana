@@ -10,7 +10,7 @@ pub struct AllocatedAttribute {
     pub max_energy: u16,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct NewNftClassData {
     pub price: u64,
     pub boost_attack: u16,
@@ -18,7 +18,7 @@ pub struct NewNftClassData {
     pub boost_speed: u16,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone)]
 pub struct NewItemClassData {
     pub price: u64,
     pub heal_hp: u16,
