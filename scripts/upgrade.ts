@@ -1,14 +1,13 @@
 import * as anchor from "@coral-xyz/anchor";
+import { PublicKey } from "@solana/web3.js";
 import { PigeonBattle } from "../target/types/pigeon_battle";
 import {} from "@metaplex-foundation/mpl-token-metadata";
 import { IDL } from "./utils/idl";
-import { PublicKey } from "@solana/web3.js";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
-const MY_TOKEN = "6h9g35j3Yyr5h9qH5yfoRjaFMc297hUkAS4iEGD6vcKi";
-const OP_TOKEN = "2Axa3x4B6sMQRLdSb7pK33AHM18H84F3c3DsMzsQbC6t";
+const MY_TOKEN = "H43GgR5uuxYjwziQFst8Ri3S4bZX9tDNdkh795rg1pHZ";
 
-// Fee: ? SOL
+// Fee: 0.021 SOL
 const main = async () => {
   // Configure the provider to use Devnet
   const provider = anchor.AnchorProvider.env();
@@ -19,25 +18,26 @@ const main = async () => {
   // Load the IDL
   const program = new anchor.Program<PigeonBattle>(IDL as any, provider);
 
-  const myToken = getAssociatedTokenAddressSync(
+  const token = getAssociatedTokenAddressSync(
     new PublicKey(MY_TOKEN),
-    provider.wallet.publicKey
-  );
-  const opToken = getAssociatedTokenAddressSync(
-    new PublicKey(OP_TOKEN),
     provider.wallet.publicKey
   );
 
   // Invoke
   await program.methods
-    .battle()
+    .upgradeNft({
+      attack: 1,
+      defense: 1,
+      speed: 2,
+      maxHp: 0,
+      maxEnergy: 0,
+    })
     .accountsPartial({
-      myToken,
-      opToken,
+      token,
     })
     .rpc();
 
-  console.log("Battle successfully!");
+  console.log("Upgrade NFT successfully!");
 };
 
 main().catch((err) => {

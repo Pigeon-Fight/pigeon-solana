@@ -7,8 +7,9 @@ import { getMasterEdition, getMetadata } from "./utils/helpers";
 import { ADMIN, PROGRAM_ID } from "./utils/constants";
 import { IDL } from "./utils/idl";
 
-const NFT_CLASS = 8;
-const MINT_COLLECTION_ACCOUNT = "FeR2HK3EyDH98HGvVmJopgxDqgsMEqJQnCjnJBXF6dzd";
+// const NFT_CLASS = 8;
+const NFT_CLASS = 6;
+const MINT_COLLECTION_ACCOUNT = "HqF5kTPLmvX4cRBWvgTWYj6wcZc2aykAAdJt758388eQ";
 
 // Fee: 0.021 SOL
 const main = async () => {

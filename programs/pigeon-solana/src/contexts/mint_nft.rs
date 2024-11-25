@@ -201,6 +201,7 @@ impl<'info> MintNFT<'info> {
         attribute_account.class = nft_class;
         attribute_account.hp = 20;
         attribute_account.energy = 20;
+        attribute_account.exp = 100;
         attribute_account.attack = 2 + nft_info_account.boost_attack;
         attribute_account.defense = 2 + nft_info_account.boost_defense;
         attribute_account.speed = 2 + nft_info_account.boost_speed;

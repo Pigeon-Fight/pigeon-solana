@@ -4,8 +4,8 @@ import { NftAttributes, NftAttributesSchema } from "./accounts/NftAttributes";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { PROGRAM_ID } from "./utils/constants";
 
-const MY_ACCOUNT = "4u4qsoBkNYGdrU2krEYREMAvwL6thb1WYnpEXxzsi2yJ";
-const MY_TOKEN = "BvUjQKSvmNGiHMSh82Thak49Mkf2QAKf89iAGG81wBtL";
+const MY_ACCOUNT = "ETYgxgMTpjg9jUxWjiTQxRXaykjH1Yf4SL1cASZUvCmU";
+const MY_TOKEN = "H43GgR5uuxYjwziQFst8Ri3S4bZX9tDNdkh795rg1pHZ";
 const RPC_URL = "http://localhost:8899";
 
 const myToken = getAssociatedTokenAddressSync(

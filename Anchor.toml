@@ -14,7 +14,7 @@ pigeon_solana = "HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "Localnet"
 wallet = "~/.config/solana/key2.json"
 
 [scripts]
@@ -23,3 +23,5 @@ initialize = "npx ts-node scripts/initialize.ts"
 setdata = "npx ts-node scripts/setdata.ts"
 mint = "npx ts-node scripts/mint.ts"
 battle = "npx ts-node scripts/battle.ts"
+upgrade = "npx ts-node scripts/upgrade.ts"
+purchaseItem = "npx ts-node scripts/purchaseItem.ts"
