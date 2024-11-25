@@ -1,5 +1,5 @@
 export const IDL = {
-  address: "GtJQXa6CQ4qX4GuM92v7DbissAbVwrQJVcx5a4YESiCS",
+  address: "HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG",
   metadata: {
     name: "pigeon_battle",
     version: "0.1.0",

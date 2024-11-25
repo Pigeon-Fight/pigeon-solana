@@ -4,7 +4,7 @@ pub mod error;
 
 use anchor_lang::prelude::*;
 
-declare_id!("GtJQXa6CQ4qX4GuM92v7DbissAbVwrQJVcx5a4YESiCS");
+declare_id!("HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG");
 
 pub mod contexts;
 pub use contexts::*;

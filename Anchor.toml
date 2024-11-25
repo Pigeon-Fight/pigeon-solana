@@ -5,17 +5,17 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-pigeon_solana = "GtJQXa6CQ4qX4GuM92v7DbissAbVwrQJVcx5a4YESiCS"
+pigeon_solana = "HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG"
 
 [programs.devnet]
-pigeon_solana = "GtJQXa6CQ4qX4GuM92v7DbissAbVwrQJVcx5a4YESiCS"
+pigeon_solana = "HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
-wallet = "~/.config/solana/key.json"
+cluster = "Devnet"
+wallet = "~/.config/solana/key2.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

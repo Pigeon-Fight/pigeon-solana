@@ -8,7 +8,7 @@ import { ADMIN, PROGRAM_ID } from "./utils/constants";
 import { IDL } from "./utils/idl";
 
 const NFT_CLASS = 8;
-const MINT_COLLECTION_ACCOUNT = "3ay5phJCEWbrn23f2iPXEGU9BQYhuAtBRVvxue7Yjd6f";
+const MINT_COLLECTION_ACCOUNT = "FeR2HK3EyDH98HGvVmJopgxDqgsMEqJQnCjnJBXF6dzd";
 
 // Fee: 0.021 SOL
 const main = async () => {
