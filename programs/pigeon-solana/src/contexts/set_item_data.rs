@@ -1,4 +1,4 @@
-use crate::{account::PigeonConfig, data::NewItemClassData, error::CustomError};
+use crate::{account::PigeonConfig, error::CustomError};
 use anchor_lang::prelude::*;
 
 #[account]
@@ -12,7 +12,7 @@ pub struct ItemClassInfo {
 }
 
 #[derive(Accounts)]
-#[instruction(item_class: u8, item_data: NewItemClassData)]
+#[instruction(item_class: u8, item_data: ItemClassInfo)]
 pub struct SetItemData<'info> {
     #[account(
         mut,
@@ -36,7 +36,7 @@ pub struct SetItemData<'info> {
 }
 
 impl<'info> SetItemData<'info> {
-    pub fn set_item_data(&mut self, _item_class: u8, item_data: NewItemClassData) -> Result<()> {
+    pub fn set_item_data(&mut self, _item_class: u8, item_data: ItemClassInfo) -> Result<()> {
         let item_class_info_account = &mut self.item_class_info;
         // Update Item Info
         item_class_info_account.price = item_data.price;

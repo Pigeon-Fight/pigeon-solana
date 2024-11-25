@@ -5,16 +5,16 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-pigeon_solana = "HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG"
+pigeon_solana = "96khaF5rSYhuyWKFFGsMBjZtg49pSJAoSyxKN5FAjWEp"
 
 [programs.devnet]
-pigeon_solana = "HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG"
+pigeon_solana = "96khaF5rSYhuyWKFFGsMBjZtg49pSJAoSyxKN5FAjWEp"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 wallet = "~/.config/solana/key2.json"
 
 [scripts]
@@ -22,6 +22,7 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 initialize = "npx ts-node scripts/initialize.ts"
 setdata = "npx ts-node scripts/setdata.ts"
 mint = "npx ts-node scripts/mint.ts"
-battle = "npx ts-node scripts/battle.ts"
+pvp = "npx ts-node scripts/pvp.ts"
+pve = "npx ts-node scripts/pve.ts"
 upgrade = "npx ts-node scripts/upgrade.ts"
 purchaseItem = "npx ts-node scripts/purchaseItem.ts"

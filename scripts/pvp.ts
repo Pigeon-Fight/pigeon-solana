@@ -3,10 +3,9 @@ import { PigeonBattle } from "../target/types/pigeon_battle";
 import {} from "@metaplex-foundation/mpl-token-metadata";
 import { IDL } from "./utils/idl";
 import { PublicKey } from "@solana/web3.js";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
-const MY_TOKEN = "6h9g35j3Yyr5h9qH5yfoRjaFMc297hUkAS4iEGD6vcKi";
-const OP_TOKEN = "2Axa3x4B6sMQRLdSb7pK33AHM18H84F3c3DsMzsQbC6t";
+const MY_TOKEN = "2qxowa3mGqpqGnMpWdA48cijEKxUNCXg5K3X7QJ28STY";
+const OP_TOKEN = "9FJLBFUbDP46DNvpg9Ubphdj7ZRdcZaChd2id232Hgta";
 
 // Fee: ? SOL
 const main = async () => {
@@ -19,25 +18,16 @@ const main = async () => {
   // Load the IDL
   const program = new anchor.Program<PigeonBattle>(IDL as any, provider);
 
-  const myToken = getAssociatedTokenAddressSync(
-    new PublicKey(MY_TOKEN),
-    provider.wallet.publicKey
-  );
-  const opToken = getAssociatedTokenAddressSync(
-    new PublicKey(OP_TOKEN),
-    provider.wallet.publicKey
-  );
-
   // Invoke
   await program.methods
-    .battle()
+    .pvp()
     .accountsPartial({
-      myToken,
-      opToken,
+      mint: new PublicKey(MY_TOKEN),
+      opMint: new PublicKey(OP_TOKEN),
     })
     .rpc();
 
-  console.log("Battle successfully!");
+  console.log("Battle PVP successfully!");
 };
 
 main().catch((err) => {

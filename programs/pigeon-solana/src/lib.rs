@@ -1,14 +1,14 @@
 pub mod account;
-pub mod data;
+pub mod battle;
 pub mod error;
 
 use anchor_lang::prelude::*;
 
-declare_id!("HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG");
+declare_id!("96khaF5rSYhuyWKFFGsMBjZtg49pSJAoSyxKN5FAjWEp");
 
 pub mod contexts;
+use account::NftAttributes;
 pub use contexts::*;
-pub use data::*;
 
 #[program]
 pub mod pigeon_battle {
@@ -23,14 +23,18 @@ pub mod pigeon_battle {
         ctx.accounts.mint_nft(&ctx.bumps, nft_class)
     }
 
-    pub fn battle(ctx: Context<Battle>) -> Result<()> {
-        ctx.accounts.battle()
+    pub fn pvp(ctx: Context<Pvp>) -> Result<()> {
+        ctx.accounts.pvp()
+    }
+
+    pub fn pve(ctx: Context<Pve>, enemy: NftAttributes) -> Result<()> {
+        ctx.accounts.pve(enemy)
     }
 
     pub fn set_item_data(
         ctx: Context<SetItemData>,
         item_class: u8,
-        item_data: NewItemClassData,
+        item_data: ItemClassInfo,
     ) -> Result<()> {
         ctx.accounts.set_item_data(item_class, item_data)
     }
@@ -38,7 +42,7 @@ pub mod pigeon_battle {
     pub fn set_nft_data(
         ctx: Context<SetNftData>,
         nft_class: u8,
-        nft_data: NewNftClassData,
+        nft_data: NftClassInfo,
     ) -> Result<()> {
         ctx.accounts.set_nft_data(nft_class, nft_data)
     }

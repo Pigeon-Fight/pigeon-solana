@@ -23,6 +23,11 @@ use crate::{
 
 use super::NftClassInfo;
 
+#[event]
+pub struct MintEvent {
+    pub mint: Pubkey,
+}
+
 #[derive(Accounts)]
 #[instruction(nft_class: u8)]
 pub struct MintNFT<'info> {
@@ -76,7 +81,7 @@ pub struct MintNFT<'info> {
     #[account(
         init,
         payer = owner,
-        seeds = [b"attributes", destination.key().as_ref()],
+        seeds = [b"attributes", mint.key().as_ref()],
         bump,
         // Padding for Alignment: Solana requires accounts to be padded to an 8-byte boundary. So, after 19 bytes, we need 5 bytes of padding to make it 24 bytes, which aligns the struct on an 8-byte boundary.
         // u8 (1 byte) + u16 (2 bytes) * 9 => 8 (discriminator) + 19 (data) + 5
@@ -125,7 +130,6 @@ impl<'info> MintNFT<'info> {
                 &transfer_instruction,
                 &[payer.to_account_info(), admin.to_account_info()],
             )?;
-            msg!("Token tranferred!");
         }
 
         // Mint NFT
@@ -160,8 +164,8 @@ impl<'info> MintNFT<'info> {
             },
             CreateMetadataAccountV3InstructionArgs {
                 data: DataV2 {
-                    name: "Pigeon Fight".to_string(),
-                    symbol: "PF".to_string(),
+                    name: "Pigeon Fight Collection".to_string(),
+                    symbol: "PFC".to_string(),
                     uri: "https://assets.pigeon-fight.xyz/metadata/".to_string()
                         + nft_class.to_string().as_str(),
                     seller_fee_basis_points: 500,
@@ -207,6 +211,8 @@ impl<'info> MintNFT<'info> {
         attribute_account.speed = 2 + nft_info_account.boost_speed;
         attribute_account.max_hp = 20;
         attribute_account.max_energy = 20;
+
+        emit!(MintEvent { mint: mint.key() });
 
         Ok(())
     }

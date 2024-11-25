@@ -1,5 +1,5 @@
 export const IDL = {
-  address: "HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG",
+  address: "96khaF5rSYhuyWKFFGsMBjZtg49pSJAoSyxKN5FAjWEp",
   metadata: {
     name: "pigeon_battle",
     version: "0.1.0",
@@ -7,56 +7,6 @@ export const IDL = {
     description: "Created with Anchor",
   },
   instructions: [
-    {
-      name: "battle",
-      discriminator: [124, 60, 127, 254, 179, 26, 138, 20],
-      accounts: [
-        {
-          name: "owner",
-          writable: true,
-          signer: true,
-        },
-        {
-          name: "my_token",
-        },
-        {
-          name: "op_token",
-        },
-        {
-          name: "my_attributes",
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: "const",
-                value: [97, 116, 116, 114, 105, 98, 117, 116, 101, 115],
-              },
-              {
-                kind: "account",
-                path: "my_token",
-              },
-            ],
-          },
-        },
-        {
-          name: "op_attributes",
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: "const",
-                value: [97, 116, 116, 114, 105, 98, 117, 116, 101, 115],
-              },
-              {
-                kind: "account",
-                path: "op_token",
-              },
-            ],
-          },
-        },
-      ],
-      args: [],
-    },
     {
       name: "initialize",
       discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
@@ -267,7 +217,7 @@ export const IDL = {
               },
               {
                 kind: "account",
-                path: "destination",
+                path: "mint",
               },
             ],
           },
@@ -310,7 +260,38 @@ export const IDL = {
           writable: true,
         },
         {
+          name: "mint",
+        },
+        {
           name: "token",
+          pda: {
+            seeds: [
+              {
+                kind: "account",
+                path: "user",
+              },
+              {
+                kind: "const",
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: "account",
+                path: "mint",
+              },
+            ],
+            program: {
+              kind: "const",
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89,
+              ],
+            },
+          },
         },
         {
           name: "nft_attributes_account",
@@ -323,7 +304,7 @@ export const IDL = {
               },
               {
                 kind: "account",
-                path: "token",
+                path: "mint",
               },
             ],
           },
@@ -363,6 +344,158 @@ export const IDL = {
           type: "u8",
         },
       ],
+    },
+    {
+      name: "pve",
+      discriminator: [246, 84, 155, 27, 172, 119, 181, 243],
+      accounts: [
+        {
+          name: "owner",
+          writable: true,
+          signer: true,
+        },
+        {
+          name: "mint",
+        },
+        {
+          name: "token",
+          pda: {
+            seeds: [
+              {
+                kind: "account",
+                path: "owner",
+              },
+              {
+                kind: "const",
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: "account",
+                path: "mint",
+              },
+            ],
+            program: {
+              kind: "const",
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: "attributes",
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: "const",
+                value: [97, 116, 116, 114, 105, 98, 117, 116, 101, 115],
+              },
+              {
+                kind: "account",
+                path: "mint",
+              },
+            ],
+          },
+        },
+      ],
+      args: [
+        {
+          name: "enemy",
+          type: {
+            defined: {
+              name: "NftAttributes",
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: "pvp",
+      discriminator: [191, 228, 136, 17, 36, 74, 184, 45],
+      accounts: [
+        {
+          name: "owner",
+          writable: true,
+          signer: true,
+        },
+        {
+          name: "mint",
+        },
+        {
+          name: "token",
+          pda: {
+            seeds: [
+              {
+                kind: "account",
+                path: "owner",
+              },
+              {
+                kind: "const",
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: "account",
+                path: "mint",
+              },
+            ],
+            program: {
+              kind: "const",
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: "op_mint",
+        },
+        {
+          name: "attributes",
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: "const",
+                value: [97, 116, 116, 114, 105, 98, 117, 116, 101, 115],
+              },
+              {
+                kind: "account",
+                path: "mint",
+              },
+            ],
+          },
+        },
+        {
+          name: "op_attributes",
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: "const",
+                value: [97, 116, 116, 114, 105, 98, 117, 116, 101, 115],
+              },
+              {
+                kind: "account",
+                path: "op_mint",
+              },
+            ],
+          },
+        },
+      ],
+      args: [],
     },
     {
       name: "set_item_data",
@@ -416,7 +549,7 @@ export const IDL = {
           name: "item_data",
           type: {
             defined: {
-              name: "NewItemClassData",
+              name: "ItemClassInfo",
             },
           },
         },
@@ -474,7 +607,7 @@ export const IDL = {
           name: "nft_data",
           type: {
             defined: {
-              name: "NewNftClassData",
+              name: "NftClassInfo",
             },
           },
         },
@@ -500,13 +633,44 @@ export const IDL = {
               },
               {
                 kind: "account",
-                path: "token",
+                path: "mint",
               },
             ],
           },
         },
         {
+          name: "mint",
+        },
+        {
           name: "token",
+          pda: {
+            seeds: [
+              {
+                kind: "account",
+                path: "owner",
+              },
+              {
+                kind: "const",
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: "account",
+                path: "mint",
+              },
+            ],
+            program: {
+              kind: "const",
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89,
+              ],
+            },
+          },
         },
       ],
       args: [
@@ -537,6 +701,12 @@ export const IDL = {
     {
       name: "PigeonConfig",
       discriminator: [244, 133, 88, 9, 239, 73, 111, 201],
+    },
+  ],
+  events: [
+    {
+      name: "MintEvent",
+      discriminator: [197, 144, 146, 149, 66, 164, 95, 16],
     },
   ],
   errors: [
@@ -628,57 +798,13 @@ export const IDL = {
       },
     },
     {
-      name: "NewItemClassData",
+      name: "MintEvent",
       type: {
         kind: "struct",
         fields: [
           {
-            name: "price",
-            type: "u64",
-          },
-          {
-            name: "heal_hp",
-            type: "u16",
-          },
-          {
-            name: "heal_energy",
-            type: "u16",
-          },
-          {
-            name: "boost_attack",
-            type: "u16",
-          },
-          {
-            name: "boost_defense",
-            type: "u16",
-          },
-          {
-            name: "boost_speed",
-            type: "u16",
-          },
-        ],
-      },
-    },
-    {
-      name: "NewNftClassData",
-      type: {
-        kind: "struct",
-        fields: [
-          {
-            name: "price",
-            type: "u64",
-          },
-          {
-            name: "boost_attack",
-            type: "u16",
-          },
-          {
-            name: "boost_defense",
-            type: "u16",
-          },
-          {
-            name: "boost_speed",
-            type: "u16",
+            name: "mint",
+            type: "pubkey",
           },
         ],
       },

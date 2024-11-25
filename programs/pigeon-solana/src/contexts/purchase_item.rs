@@ -3,7 +3,7 @@ use crate::{
     error::CustomError,
 };
 use anchor_lang::prelude::*;
-use anchor_spl::token::TokenAccount;
+use anchor_spl::token::{Mint, TokenAccount};
 
 use super::ItemClassInfo;
 
@@ -18,13 +18,16 @@ pub struct PurchaseItem<'info> {
         address = pigeon_config.admin_key @ CustomError::Unauthorized
     )]
     pub admin: AccountInfo<'info>,
+    #[account()]
+    pub mint: Account<'info, Mint>,
     #[account(
-        constraint = token.owner.key() == user.key() @ CustomError::NotOwner
+        associated_token::mint = mint,
+        associated_token::authority = user
     )]
     pub token: Account<'info, TokenAccount>,
     #[account(
         mut,
-        seeds = [b"attributes", token.key().as_ref()],
+        seeds = [b"attributes", mint.key().as_ref()],
         bump,
     )]
     pub nft_attributes_account: Account<'info, NftAttributes>,

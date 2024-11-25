@@ -1,20 +1,13 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import * as borsh from "borsh";
 import { NftAttributes, NftAttributesSchema } from "./accounts/NftAttributes";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { PROGRAM_ID } from "./utils/constants";
 
-const MY_ACCOUNT = "ETYgxgMTpjg9jUxWjiTQxRXaykjH1Yf4SL1cASZUvCmU";
 const MY_TOKEN = "H43GgR5uuxYjwziQFst8Ri3S4bZX9tDNdkh795rg1pHZ";
 const RPC_URL = "http://localhost:8899";
 
-const myToken = getAssociatedTokenAddressSync(
-  new PublicKey(MY_TOKEN),
-  new PublicKey(MY_ACCOUNT)
-);
-
 const [attributePubkey, _bump] = PublicKey.findProgramAddressSync(
-  [Buffer.from("attributes"), myToken.toBuffer()],
+  [Buffer.from("attributes"), new PublicKey(MY_TOKEN).toBuffer()],
   new PublicKey(PROGRAM_ID)
 );
 

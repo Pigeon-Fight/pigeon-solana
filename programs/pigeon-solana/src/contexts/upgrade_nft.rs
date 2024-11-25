@@ -1,7 +1,17 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::TokenAccount;
+use anchor_spl::token::{Mint, TokenAccount};
 
-use crate::{account::NftAttributes, data::AllocatedAttribute, error::CustomError};
+use crate::{account::NftAttributes, error::CustomError};
+use anchor_lang::{AnchorDeserialize, AnchorSerialize};
+
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub struct AllocatedAttribute {
+    pub attack: u16,
+    pub defense: u16,
+    pub speed: u16,
+    pub max_hp: u16,
+    pub max_energy: u16,
+}
 
 const BASE_EXP: u16 = 10;
 fn exp_to_point(exp: u16) -> u16 {
@@ -14,12 +24,18 @@ pub struct UpgradeNft<'info> {
     pub owner: Signer<'info>,
     #[account(
         mut,
-        seeds = [b"attributes", token.key().as_ref()],
+        seeds = [b"attributes", mint.key().as_ref()],
         bump,
     )]
     pub nft_attribute_account: Account<'info, NftAttributes>,
     #[account(
         constraint = token.owner.key() == owner.key() @ CustomError::NotOwner
+    )]
+    #[account()]
+    pub mint: Account<'info, Mint>,
+    #[account(
+        associated_token::mint = mint,
+        associated_token::authority = owner
     )]
     pub token: Account<'info, TokenAccount>,
 }

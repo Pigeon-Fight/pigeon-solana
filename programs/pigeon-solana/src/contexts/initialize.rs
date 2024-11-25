@@ -86,7 +86,6 @@ impl<'info> Initialize<'info> {
         };
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
         mint_to(cpi_ctx, 1)?;
-        msg!("Collection NFT minted!");
 
         let creator = vec![Creator {
             address: self.mint_authority.key().clone(),
@@ -120,7 +119,6 @@ impl<'info> Initialize<'info> {
             },
         );
         metadata_account.invoke_signed(signer_seeds)?;
-        msg!("Metadata Account created!");
 
         let master_edition_account = CreateMasterEditionV3Cpi::new(
             spl_metadata_program,
@@ -140,7 +138,6 @@ impl<'info> Initialize<'info> {
             },
         );
         master_edition_account.invoke_signed(signer_seeds)?;
-        msg!("Master Edition Account created");
 
         Ok(())
     }

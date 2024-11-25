@@ -17,6 +17,6 @@ solana airdrop 10
 ```bash
 anchor build
 anchor deploy
-PROGRAM_ID=HqXLvkNCHTvP8RBoYWKe3vKBZbPxrcDseugopMs9bTrG
+PROGRAM_ID=96khaF5rSYhuyWKFFGsMBjZtg49pSJAoSyxKN5FAjWEp
 anchor idl init --filepath ./target/idl/pigeon_battle.json $PROGRAM_ID --provider.cluster devnet
 ```

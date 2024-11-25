@@ -1,5 +1,6 @@
-use crate::{account::PigeonConfig, data::NewNftClassData, error::CustomError};
+use crate::{account::PigeonConfig, error::CustomError};
 use anchor_lang::prelude::*;
+use anchor_lang::{AnchorDeserialize, AnchorSerialize};
 
 #[account]
 pub struct NftClassInfo {
@@ -10,7 +11,7 @@ pub struct NftClassInfo {
 }
 
 #[derive(Accounts)]
-#[instruction(nft_class: u8, nft_data: NewNftClassData)]
+#[instruction(nft_class: u8, nft_data: NftClassInfo)]
 pub struct SetNftData<'info> {
     #[account(
         mut,
@@ -34,7 +35,7 @@ pub struct SetNftData<'info> {
 }
 
 impl<'info> SetNftData<'info> {
-    pub fn set_nft_data(&mut self, _nft_class: u8, nft_data: NewNftClassData) -> Result<()> {
+    pub fn set_nft_data(&mut self, _nft_class: u8, nft_data: NftClassInfo) -> Result<()> {
         let nft_class_info_account = &mut self.nft_class_info;
         // Update NFT info
         nft_class_info_account.price = nft_data.price;
